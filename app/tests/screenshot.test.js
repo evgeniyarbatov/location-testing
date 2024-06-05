@@ -30,33 +30,23 @@ describe('Screenshot tests', function() {
     await browser.close();
   });
 
+  // Iterate over each location we want to test
   locations.forEach(({ name, latitude, longitude }) => {
     it(`take a screenshot for ${name}`, async () => {
-      await page.evaluateOnNewDocument(() => {
-          navigator.geolocation.getCurrentPosition = cb => {
-            setTimeout(() => {
-              cb({
-                'coords': {
-                  accuracy: 21,
-                  altitude: null,
-                  altitudeAccuracy: null,
-                  heading: null,
-                  latitude: latitude,
-                  longitude: longitude,
-                  speed: null
-                }
-              })
-            }, 1000)
-          }
+      // Set location for the test
+      await page.setGeolocation({
+        latitude: latitude, 
+        longitude: longitude,
       });
 
       await page.goto(URL);
       await page.click('button#get-location');
 
-      // await page.waitForFunction(() => {
-      //   const element = document.querySelector('p#location');
-      //   return element && element.textContent.trim() !== '';
-      // });
+      // Make sure the page loaded after button click
+      await page.waitForFunction(() => {
+        const element = document.querySelector('p#location');
+        return element && element.textContent.trim() !== '';
+      });
 
       await page.screenshot({ path: path.join(__dirname, 'screenshots', `${name}.png`) });
     });
