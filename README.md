@@ -1,2 +1,3 @@
 # location-testing
-E2E testing of pages with location
+
+Basic testing to ensure that the webpage is rendered as expected depending on location.
