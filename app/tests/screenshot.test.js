@@ -16,7 +16,7 @@ describe('Screenshot tests', function() {
 
     page = await browser.newPage();
 
-    // Render mobile site page
+    // Emulate mobile phone
     await page.setViewport({ width: 375, height: 812, isMobile: true });
   });
 
@@ -46,6 +46,11 @@ describe('Screenshot tests', function() {
     await page.goto(URL);
 
     await page.click('button#get-location');
+
+    await page.waitForFunction(() => {
+      const element = document.querySelector('p#location');
+      return element && element.textContent.trim() !== '';
+    });
 
     let name = 'current-location';
     await page.screenshot({ path: path.join(__dirname, 'screenshots', `${name}.png`) });
